@@ -1,5 +1,6 @@
 import TurnedInNot from "@mui/icons-material/TurnedInNot";
 import CloseOutlined from "@mui/icons-material/CloseOutlined";
+import PersonIcon from "@mui/icons-material/Person";
 import {
   Divider,
   Drawer,
@@ -18,14 +19,30 @@ import {
 export const SideBar = ({ drawerWidth = 240, handleDrawerToggle, isOpen }) => {
   const drawer = (
     <div>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography variant="h6" noWrap component={"div"}>
+      <Toolbar
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
+          variant="h6"
+          noWrap
+          component={"div"}
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <PersonIcon />
           Randall Mora
         </Typography>
         <IconButton
           color="inherit"
           aria-label="open drawer"
           edge="start"
+          sx={{ display: { xs: "block", md: "none" } }}
           onClick={handleDrawerToggle}
         >
           <CloseOutlined />
