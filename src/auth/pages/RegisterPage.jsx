@@ -1,19 +1,54 @@
-import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Grid, Link, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useForm } from "../../hooks";
 import { AuthLayout } from "../layout/AuthLayout";
 
+const formValidations = {
+  email: [(value) => value.includes("@"), "El correo debe tener un @"],
+  password: [
+    (value) => value.length >= 8,
+    "El password debe tener más de 6 carácteres",
+  ],
+  displayName: [
+    (value) => value.length >= 1,
+    "El nombre debe tener más de 1 carácter",
+  ],
+};
+
 export const RegisterPage = () => {
+  const [formSubmitted, setformSubmitted] = useState(false);
+  const { displayName, email, password, onInputChange, errors, isFormValid } =
+    useForm(
+      {
+        email: "",
+        password: "",
+        displayName: "",
+      },
+      formValidations
+    );
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setformSubmitted(true);
+    if (isFormValid) {
+    }
+  };
+
   return (
     <>
       <AuthLayout title="Sign Up">
-        <form>
+        <form onSubmit={onSubmit}>
           <Grid container>
             <Grid item xs={12} sx={{ mt: 2 }}>
               <TextField
                 label="Full name"
+                name="displayName"
+                value={displayName}
+                onChange={onInputChange}
                 type={"text"}
+                error={!!errors.displayName && formSubmitted}
+                helperText={formSubmitted && errors.displayName}
                 placeholder="Jack Dickinson"
                 fullWidth
               />
@@ -22,6 +57,11 @@ export const RegisterPage = () => {
               <TextField
                 label="Email"
                 type={"email"}
+                name="email"
+                value={email}
+                error={!!errors.email && formSubmitted}
+                helperText={formSubmitted && errors.email}
+                onChange={onInputChange}
                 placeholder="email@email.com"
                 fullWidth
               />
@@ -30,13 +70,18 @@ export const RegisterPage = () => {
               <TextField
                 label="Password"
                 type={"password"}
+                name="password"
+                error={!!errors.password && formSubmitted}
+                helperText={formSubmitted && errors.password}
+                value={password}
+                onChange={onInputChange}
                 placeholder="pass"
                 fullWidth
               />
             </Grid>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12}>
-                <Button variant="contained" fullWidth>
+                <Button type="submit" variant="contained" fullWidth>
                   Sign Up!
                 </Button>
               </Grid>
