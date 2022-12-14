@@ -1,4 +1,9 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -27,6 +32,40 @@ export const signInWithGoogle = async () => {
       ok: false,
       code,
       message,
+    };
+  }
+};
+
+export const registerUserWithEmailPassword = async ({
+  email,
+  password,
+  displayName,
+}) => {
+  try {
+    const resp = await createUserWithEmailAndPassword(
+      FirebaseAuth,
+      email,
+      password
+    );
+    const { uid, photoURL } = resp.user;
+    await updateProfile(FirebaseAuth.currentUser, {
+      displayName,
+    });
+    return {
+      ok: true,
+      uid,
+      email,
+      photoURL,
+    };
+  } catch ({ code, message, ...rest }) {
+    const errorMessage =
+      rest.customData._tokenResponse.error.errors[0].message === "EMAIL_EXISTS"
+        ? "Error. Email is currently in use."
+        : "Something bad ocurred";
+    return {
+      ok: false,
+      code,
+      message: errorMessage,
     };
   }
 };

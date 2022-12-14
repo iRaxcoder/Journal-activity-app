@@ -1,7 +1,17 @@
-import { Button, Grid, Link, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
+import { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm } from "../../hooks";
+import { startCreatingUserWithEmailPassword } from "../../store/auth/thunks";
 import { AuthLayout } from "../layout/AuthLayout";
 
 const formValidations = {
@@ -17,22 +27,36 @@ const formValidations = {
 };
 
 export const RegisterPage = () => {
+  const dispatch = useDispatch();
   const [formSubmitted, setformSubmitted] = useState(false);
-  const { displayName, email, password, onInputChange, errors, isFormValid } =
-    useForm(
-      {
-        email: "",
-        password: "",
-        displayName: "",
-      },
-      formValidations
-    );
+  const { status, errorMessage } = useSelector((state) => state.auth);
+
+  const isCheckingAuthentication = useMemo(
+    () => status === "checking",
+    [status]
+  );
+  const {
+    displayName,
+    email,
+    password,
+    formState,
+    onInputChange,
+    errors,
+    isFormValid,
+  } = useForm(
+    {
+      email: "",
+      password: "",
+      displayName: "",
+    },
+    formValidations
+  );
 
   const onSubmit = (e) => {
     e.preventDefault();
     setformSubmitted(true);
-    if (isFormValid) {
-    }
+    if (!isFormValid) return;
+    dispatch(startCreatingUserWithEmailPassword(formState));
   };
 
   return (
@@ -80,12 +104,19 @@ export const RegisterPage = () => {
               />
             </Grid>
             <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid display={!!errorMessage ? "" : "none"} item xs={12} md={12}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Grid>
               <Grid item xs={12}>
-                <Button type="submit" variant="contained" fullWidth>
+                <Button
+                  disabled={isCheckingAuthentication}
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                >
                   Sign Up!
                 </Button>
               </Grid>
-              <Grid item xs={12} md={6}></Grid>
             </Grid>
             <Grid
               container
