@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  signInWithEmailAndPassword,
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
@@ -68,4 +69,39 @@ export const registerUserWithEmailPassword = async ({
       message: errorMessage,
     };
   }
+};
+
+export const loginWithEmailAndPassword = async (email_, password) => {
+  try {
+    const result = await signInWithEmailAndPassword(
+      FirebaseAuth,
+      email_,
+      password
+    );
+
+    //const credentials = GoogleAuthProvider.credentialFromResult(result);
+
+    const { displayName, email, photoURL, uid } = result.user;
+
+    return {
+      ok: true,
+      displayName,
+      email,
+      photoURL,
+      uid,
+    };
+  } catch (error) {
+    console.log(error.message);
+    const errorMessage = error.message
+      ? "Error. Incorrect email or password"
+      : "";
+    return {
+      ok: false,
+      message: errorMessage,
+    };
+  }
+};
+
+export const logoutFirebase = async () => {
+  return await FirebaseAuth.signOut();
 };

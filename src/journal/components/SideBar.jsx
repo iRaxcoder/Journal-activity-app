@@ -15,8 +15,10 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export const SideBar = ({ drawerWidth = 240, handleDrawerToggle, isOpen }) => {
+  const { displayName } = useSelector((state) => state.auth);
   const drawer = (
     <div>
       <Toolbar
@@ -25,7 +27,7 @@ export const SideBar = ({ drawerWidth = 240, handleDrawerToggle, isOpen }) => {
         }}
       >
         <Typography
-          variant="h6"
+          variant="h7"
           noWrap
           component={"div"}
           sx={{
@@ -36,7 +38,7 @@ export const SideBar = ({ drawerWidth = 240, handleDrawerToggle, isOpen }) => {
           }}
         >
           <PersonIcon />
-          Randall Mora
+          {displayName}
         </Typography>
         <IconButton
           color="inherit"
