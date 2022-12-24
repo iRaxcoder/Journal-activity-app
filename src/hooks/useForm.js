@@ -13,6 +13,10 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
   };
 
   useEffect(() => {
+    setformState(initialForm);
+  }, [initialForm]);
+
+  useEffect(() => {
     isFieldError();
   }, [formState]);
 
