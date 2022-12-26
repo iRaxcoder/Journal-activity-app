@@ -5,7 +5,11 @@ import { useForm } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
 import { useEffect } from "react";
-import { setActiveNote, startSaveNote } from "../../store/journal";
+import {
+  setActiveNote,
+  startSaveNote,
+  startUploadingImages,
+} from "../../store/journal";
 import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 import { useRef } from "react";
 
@@ -29,6 +33,7 @@ export const NoteView = () => {
 
   const onFileInputChange = ({ target }) => {
     if (target.files.length === 0) return;
+    dispatch(startUploadingImages(target.files));
   };
 
   return (
@@ -99,7 +104,7 @@ export const NoteView = () => {
             minRows={5}
           />
         </Grid>
-        <ImageGallery />
+        <ImageGallery images={activeNote.imageUrls} />
       </Grid>
     </>
   );
