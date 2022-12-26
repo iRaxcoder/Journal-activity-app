@@ -1,18 +1,35 @@
 import SaveOutlined from "@mui/icons-material/SaveOutlined";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import { Button, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { ImageGallery } from "../components";
 import { useForm } from "../../hooks";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
+import { useEffect } from "react";
+import { setActiveNote, startSaveNote } from "../../store/journal";
+import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
+import { useRef } from "react";
 
 export const NoteView = () => {
-  const { activeNote } = useSelector((state) => state.journal);
-
+  const fileInputRef = useRef();
+  const { activeNote, isSaving } = useSelector((state) => state.journal);
+  const dispatch = useDispatch();
   const { body, title, date, onInputChange, formState } = useForm(activeNote);
 
   const dateString = useMemo(() => {
     return new Date(date).toUTCString();
   }, [date]);
+
+  useEffect(() => {
+    dispatch(setActiveNote(formState));
+  }, [formState]);
+
+  const onSaveNote = () => {
+    dispatch(startSaveNote());
+  };
+
+  const onFileInputChange = ({ target }) => {
+    if (target.files.length === 0) return;
+  };
 
   return (
     <>
@@ -30,9 +47,32 @@ export const NoteView = () => {
           </Typography>
         </Grid>
         <Grid item>
-          <Button color="primary" sx={{ padding: 2 }}>
+          <input
+            ref={fileInputRef}
+            className=""
+            multiple
+            accept="image/png,image/jpeg"
+            type={"file"}
+            onChange={onFileInputChange}
+            style={{ display: "none" }}
+          />
+
+          <IconButton
+            onClick={() => fileInputRef.current.click()}
+            color="primary"
+            disabled={isSaving}
+          >
+            <UploadFileOutlined />
+            <Typography>Upload image</Typography>
+          </IconButton>
+          <Button
+            disabled={isSaving}
+            color="primary"
+            sx={{ padding: 2 }}
+            onClick={onSaveNote}
+          >
             <SaveOutlined sx={{ fontSize: 30, mr: 1 }} />
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Grid>
         <Grid container>

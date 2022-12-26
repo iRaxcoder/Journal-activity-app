@@ -4,7 +4,7 @@ export const journalSlice = createSlice({
   name: "journal",
   initialState: {
     isSaving: false,
-    statusMessage: "",
+    statusMessage: null,
     notes: [],
     activeNote: null,
   },
@@ -18,13 +18,38 @@ export const journalSlice = createSlice({
     },
     setActiveNote: (state, action) => {
       state.activeNote = action.payload;
+      state.statusMessage = null;
     },
     setNotes: (state, action) => {
       state.notes = action.payload;
     },
-    setSaving: (state) => {},
-    updateNote: (state, action) => {},
+    setSaving: (state) => {
+      state.isSaving = true;
+      state.statusMessage = null;
+    },
+    updateNote: (state, action) => {
+      state.isSaving = false;
+      state.notes = state.notes.map((n) => {
+        if (n.id === action.payload.id) {
+          return action.payload;
+        }
+        return n;
+      });
+      state.statusMessage = {
+        header: "Nice!",
+        type: "success",
+        message: `'${action.payload.title}', updated!`,
+      };
+    },
     deleteNoteById: (state, action) => {},
+    errorOcurred: (state) => {
+      state.statusMessage = {
+        header: "Ups!",
+        type: "error",
+        message: `Something went wrong`,
+      };
+      state.isSaving = false;
+    },
   },
 });
 export const {
@@ -35,4 +60,5 @@ export const {
   setSaving,
   updateNote,
   deleteNoteById,
+  errorOcurred,
 } = journalSlice.actions;
