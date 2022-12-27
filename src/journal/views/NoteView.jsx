@@ -12,6 +12,8 @@ import {
 } from "../../store/journal";
 import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 import { useRef } from "react";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import { startDeletingNote } from "../../store/auth";
 
 export const NoteView = () => {
   const fileInputRef = useRef();
@@ -34,6 +36,10 @@ export const NoteView = () => {
   const onFileInputChange = ({ target }) => {
     if (target.files.length === 0) return;
     dispatch(startUploadingImages(target.files));
+  };
+
+  const onDelete = () => {
+    dispatch(startDeletingNote());
   };
 
   return (
@@ -103,6 +109,12 @@ export const NoteView = () => {
             placeholder="What happened today?"
             minRows={5}
           />
+        </Grid>
+        <Grid container justifyContent={"end"}>
+          <Button color="error" onClick={onDelete} sx={{ mt: 2 }}>
+            <DeleteOutline />
+            Borrar
+          </Button>
         </Grid>
         <ImageGallery images={activeNote.imageUrls} />
       </Grid>

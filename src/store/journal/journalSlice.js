@@ -48,7 +48,16 @@ export const journalSlice = createSlice({
       ];
       state.isSaving = false;
     },
-    deleteNoteById: (state, action) => {},
+    clearNotesLogout: (state) => {
+      state.isSaving = false;
+      state.statusMessage = null;
+      state.activeNote = null;
+      state.notes = [];
+    },
+    deleteNoteById: (state, action) => {
+      state.notes = state.notes.filter((n) => n.id !== action.payload);
+      state.activeNote = null;
+    },
     errorOcurred: (state) => {
       state.statusMessage = {
         header: "Ups!",
@@ -69,4 +78,5 @@ export const {
   deleteNoteById,
   errorOcurred,
   setPhotosToActiveNote,
+  clearNotesLogout,
 } = journalSlice.actions;
