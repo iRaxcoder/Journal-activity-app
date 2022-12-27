@@ -74,11 +74,10 @@ export const startUploadingImages = (images = []) => {
     const imagesUploadedUrls = [];
 
     for (const img of images) {
-      const url = await fileUpload(img);
-      console.log(url);
-      imagesUploadedUrls.push(url);
+      imagesUploadedUrls.push(fileUpload(img));
     }
-    dispatch(setPhotosToActiveNote(imagesUploadedUrls));
+    const urls = await Promise.all(imagesUploadedUrls);
+    dispatch(setPhotosToActiveNote(urls));
 
     try {
     } catch (error) {
