@@ -26,6 +26,12 @@ const formValidations = {
   ],
 };
 
+const formDefault = {
+  email: "",
+  password: "",
+  displayName: "",
+};
+
 export const RegisterPage = () => {
   const dispatch = useDispatch();
   const [formSubmitted, setformSubmitted] = useState(false);
@@ -43,14 +49,7 @@ export const RegisterPage = () => {
     onInputChange,
     errors,
     isFormValid,
-  } = useForm(
-    {
-      email: "",
-      password: "",
-      displayName: "",
-    },
-    formValidations
-  );
+  } = useForm(formDefault, formValidations);
 
   const onSubmit = (e) => {
     e.preventDefault();
