@@ -28,7 +28,7 @@ export const signInWithGoogle = async () => {
       uid,
     };
   } catch ({ code, message }) {
-    console.log(error);
+    console.log(code, message);
     return {
       ok: false,
       code,
